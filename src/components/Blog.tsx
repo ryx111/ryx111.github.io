@@ -168,6 +168,10 @@ when deploying via Github Pages so that development and production routing works
       that was created when doing 'yarn install', 'yarn build' and then 'yarn deploy'.
 
       15) Also note that I updated the package.json to use the new URL as well (ryx111.github.io)
+
+      16) Rewrite history correctly
+
+      https://stackoverflow.com/questions/3042437/how-to-change-the-commit-author-for-a-single-commit
     `;
   };
 
