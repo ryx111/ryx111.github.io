@@ -1,0 +1,185 @@
+import React, { ChangeEvent } from "react";
+import { Link } from "react-router-dom";
+import { withRouter } from "react-router-dom";
+import ReactPlayer from "react-player";
+import styled from "styled-components";
+
+const Wrapper = styled.div`
+  width: 95%;
+  background-color: #f6f6ef;
+  color: black;
+  align-content: center;
+  margin: auto;
+`;
+
+const StyledLink = styled(Link)`
+  font-size: 15px;
+`;
+const CenterDiv = styled.div`
+  margin: 1em;
+  display: inline-block;
+`;
+
+const SpeedInput = styled.input`
+  padding: 0.5em;
+  margin: 0.5em;
+  background: white;
+  color: black;
+  width: 60px;
+  height: 20px;
+  font-size: 16px;
+  border-radius: 3px;
+  font-weight: 400;
+`;
+
+const CustomButton = styled.button`
+  width: "100px";
+  height: "40px";
+  font-size: 28px;
+  padding: 0.5em;
+`;
+const CustomButton2 = styled.button`
+  width: "200px";
+  height: "40px";
+  font-size: 20px;
+  padding: 0.5em;
+`;
+
+function getGoldWidth(goldHeight) {
+  let goldY = Number(goldHeight.substring(0, goldHeight.length - 2)); // "640"
+  let goldWidth = goldY * 1.618 + "px";
+  return goldWidth;
+}
+
+const goldHeight = "220px";
+const goldWidth = getGoldWidth(goldHeight);
+
+// from Youtube API
+export interface YoutubeVideoObj {
+  id: {
+    videoId: string;
+  };
+  snippet: {
+    channelId: string;
+    channelTitle: string;
+    title;
+  };
+}
+
+interface Props {
+  videoObj: YoutubeVideoObj;
+  channelTerm: string;
+  selectedChannel: string;
+  index: number;
+  selectedIndex: number;
+  onChannelClick: () => void;
+  globalVolume: number;
+}
+
+interface State {
+  playbackRate: number;
+  seeking: boolean;
+  isShowing: boolean;
+}
+
+class VideoItem extends React.Component<Props, State> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      playbackRate: 1,
+      seeking: false,
+      isShowing: false
+    };
+  }
+
+  showPlayer = () => {
+    this.setState({ isShowing: true });
+  };
+
+  onPlaybackRateChange = (event: ChangeEvent<HTMLInputElement>) => {
+    // prevent value of NaN when input has emtpy string
+    this.setState({ playbackRate: parseFloat(event.target.value) || 1.0 });
+  };
+
+  render() {
+    const {
+      id: { videoId },
+      //snippet: { thumbnails: { high: { url: thumbnail }}, title}
+      snippet: { channelId, channelTitle, title }
+    } = this.props.videoObj;
+    let videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
+
+    let mSet = new Set([0, 1, 2]);
+    const aposttropheRegex = /&#39;/gi;
+
+    return (
+      <Wrapper>
+        <div>
+          <div>
+            {this.props.index == this.props.selectedIndex ? (
+              <h1> {title.replace(aposttropheRegex, "'")}</h1>
+            ) : (
+              <h1>{title.replace(aposttropheRegex, "'")} </h1>
+            )}
+          </div>
+          <CenterDiv>
+            {this.state.isShowing || mSet.has(this.props.index) ? (
+              <ReactPlayer
+                url={videoUrl}
+                playbackRate={this.state.playbackRate}
+                controls={true}
+                width={goldWidth}
+                height={goldHeight}
+                volume={this.props.globalVolume}
+              />
+            ) : (
+              <CustomButton onClick={this.showPlayer}> Play </CustomButton>
+            )}
+          </CenterDiv>
+          <CenterDiv>
+            {(this.state.isShowing || mSet.has(this.props.index)) && (
+              <SpeedInput
+                placeholder="Speed"
+                type="text"
+                onChange={this.onPlaybackRateChange}
+              />
+            )}
+          </CenterDiv>
+          <CenterDiv>
+            <CustomButton2 onClick={this.props.onChannelClick}>
+              {channelTitle}
+            </CustomButton2>
+          </CenterDiv>
+          <CenterDiv>
+            {channelId == this.props.channelTerm &&
+              this.props.selectedChannel && (
+                <StyledLink to={process.env.PUBLIC_URL + "/ChannelList"}>
+                  Latest from {this.props.selectedChannel}
+                </StyledLink>
+              )}
+          </CenterDiv>
+          <CenterDiv>
+            <a href={videoUrl}> YT </a>
+          </CenterDiv>
+        </div>
+      </Wrapper>
+    );
+  }
+}
+
+export default VideoItem;
+
+/*
+{ Math.abs(this.props.index - this.props.selectedIndex) <= 1 && 
+                <SpeedInput 
+                  placeholder="Speed"
+                  type="text"
+                  onChange={this.onPlaybackRateChange}
+                />
+            }
+            <h2> channelId is {channelId}</h2>
+            <h2> currChannelTerm is {this.props.channelTerm}</h2>
+            :  <CustomButton onClick={this.props.onTodoClick}> Play </CustomButton>   
+
+            // this.props.onTodoClick dispatches a select video action
+*/
