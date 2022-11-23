@@ -112,6 +112,65 @@ when deploying via Github Pages so that development and production routing works
     `;
   };
 
+  getPostFive = () => {
+    return `
+    1) Create new github account 
+    https://docs.github.com/en/get-started/importing-your-projects-to-github/importing-source-code-to-github/adding-locally-hosted-code-to-github
+
+    2) Wanted to clone my 'frame' repo locally into a new folder/directory (copy_frame)
+    for the new github user 
+
+    3) Did so by doing "git clone path/to/source/folder path/to/destination/folder"
+
+    https://stackoverflow.com/questions/21045061/git-clone-from-another-directory
+
+    4) Then wanted to make cloned folder (copy_frames) a git repo
+    so did 'git init'
+
+    5) When adding the changes, a message said that there was already a git directory inside (i.e.
+      a git submodule). Followed the steps to delete and remove the original git linkages/stuff in the 'frame' folder (copy_frame/frame)
+      that was cloned.
+
+      Ran 'rm -rf .git' 
+
+      and then checked there was no longer git linkage with 'git remote -v'
+
+      https://stackoverflow.com/questions/1213430/how-to-fully-delete-a-git-repository-created-with-init/1213449#1213449
+
+    6) Made the cloned frame folder a git repo with 'git init'
+
+    7) Created the github repo 'ryx111.github.io'
+      per the steps in Creating a GH page.
+
+    https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site
+      
+      8) Added all the local changes in the new folder with 'git add .' and 'git commit'
+
+      Set the corresponding upstream to push to.
+
+      9) Was running into issues where running 'git push origin master' failed due to access
+      and because it was using the other github account's credentials and I wanted to use the new github user.
+
+      10) Went to Windows Credential Manager to remove the saved github credentials from the other account
+
+      11) https://stackoverflow.com/questions/13103083/how-do-i-push-to-github-under-a-different-username
+
+      "git config remote.origin.url https://different_user@github.com/different_user/repo.git"
+
+      did the job to use the password for the new user.
+
+      12) Set up the personal access token for the Github user and used it
+      https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
+
+      13) Now was able to push the local files to the Github repo.
+
+      14) Rest was the standard deployment, and setting the publishing source of the project to the 'gh-pages' branch
+      that was created when doing 'yarn install', 'yarn build' and then 'yarn deploy'.
+
+      15) Also note that I updated the package.json to use the new URL as well (ryx111.github.io)
+    `;
+  };
+
   mapToPost = (text: string): JSX.Element => {
     // Split by regex of 2 spaces or more
     let paragraphs: string[] = text.split(/\s{2,}/);
