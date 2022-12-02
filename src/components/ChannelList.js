@@ -165,7 +165,7 @@ const ChannelList = props => {
               className="published-after-container"
               style={{ display: "flex", flexDirection: "column" }}
             >
-              <label for="publishedAfter"> Start (YYYY)</label>
+              <label for="publishedAfter"> After (YYYY)</label>
               <input
                 id="publishedAfter"
                 type="text"
@@ -176,7 +176,7 @@ const ChannelList = props => {
               />
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <label for="publishedBefore"> End (YYYY)</label>
+              <label for="publishedBefore"> Before (YYYY)</label>
               <input
                 id="publishedBefore"
                 type="text"
