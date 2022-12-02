@@ -102,12 +102,23 @@ const makeChannelUrl = (
 ) => {
   // From the inputs on the <ChannelList />
   const queryTerm = wholePayload.optionalParametersObj.q;
+  const publishedAfter = wholePayload.optionalParametersObj.publishedAfter;
+  const publishedBefore = wholePayload.optionalParametersObj.publishedBefore;
   // get five latest videos from a channel
   let URL = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelTerm}&maxResults=${MAX_RESULTS}&order=date&type=video&key=${API_KEY}`;
 
   if (queryTerm) {
     URL += `&q=${queryTerm}`;
   }
+
+  if (publishedAfter) {
+    URL += `&publishedAfter=${publishedAfter}`;
+  }
+
+  if (publishedBefore) {
+    URL += `&publishedBefore=${publishedBefore}`;
+  }
+
   return URL;
 };
 

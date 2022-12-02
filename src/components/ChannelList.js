@@ -31,6 +31,14 @@ function getDebouncedFunction(fn, delayInMs) {
 const ChannelList = props => {
   const [queryTerm, setQueryTerm] = useState("");
 
+  // Initializing the controlled component as undefined instead of an
+  // empty string shows the following warning and messes up the React render.
+  // https://stackoverflow.com/questions/50970793/react-warning-componentxxx-is-changing-an-uncontrolled-input-of-type-undefine
+  const [publishedAfterDateString, setPublishedAfterDateString] = useState("");
+  const [publishedBeforeDateString, setPublishedBeforeDateString] = useState(
+    ""
+  );
+
   const parseYoutubeVideoJSON = json => {
     let videosList = json.items.map((obj, index) => {
       // items prop of the youtube JSON returns array of objects
@@ -58,6 +66,9 @@ const ChannelList = props => {
   // Something odd happened when using event as the argument with the synthetic React event
   // It blew up because it said it was null? weird, just modify the argument
   // to be the actual argument instead of the event
+  // Also note that if this function didn't take in a parameter, and its then memo-ed
+  // with useCallback(), it would close over queryTerm but the function would be memo-ed
+  // over the original empty string.
   const handleSearchChannelVideos = queryValue => {
     let optionalParametersObj = {
       q: queryValue
@@ -87,6 +98,37 @@ const ChannelList = props => {
     memoedCb(e.target.value);
   };
 
+  const handleClickSearchVideos = () => {
+    // later add the query term if there is one
+    // YoutubeAPI needs the date time in a particular format
+    // This can be Number(undefined) which is NaN but the conditional spread
+    const publishedAfterYearNum = Number(publishedAfterDateString);
+    const publishedAfter = new Date(publishedAfterYearNum, 0, 1).toISOString(); // month is zero indexed
+
+    const publishedBeforeYearNum = Number(publishedBeforeDateString);
+    const publishedBefore = new Date(
+      publishedBeforeYearNum,
+      0,
+      1
+    ).toISOString();
+
+    let optionalParametersObj = {
+      // hardcode
+      ...(publishedAfterDateString
+        ? {
+            publishedAfter
+          }
+        : {}),
+      ...(publishedBeforeDateString
+        ? {
+            publishedBefore
+          }
+        : {})
+    };
+
+    props.handleSearchChannelVideos(props.channelTerm, optionalParametersObj);
+  };
+
   return (
     // this.props.wholeState[this.props.searchTerm] returns the videoJSON for that serachTerm
     <div>
@@ -107,6 +149,31 @@ const ChannelList = props => {
               value={queryTerm}
               onChange={handleChange}
             />
+          </div>
+          <div
+            style={{
+              flexDirection: "row"
+            }}
+          >
+            <input
+              id="publishedAfter"
+              type="text"
+              value={publishedAfterDateString}
+              onChange={e => {
+                setPublishedAfterDateString(e.target.value);
+              }}
+            />
+
+            <input
+              id="publishedBefore"
+              type="text"
+              value={publishedBeforeDateString}
+              onChange={e => {
+                setPublishedBeforeDateString(e.target.value);
+              }}
+            />
+
+            <button onClick={handleClickSearchVideos}> Search</button>
           </div>
           <ol>
             {props.wholeState[props.channelTerm]

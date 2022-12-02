@@ -54,12 +54,15 @@ function getGoldWidth(goldHeight) {
 const goldHeight = "220px";
 const goldWidth = getGoldWidth(goldHeight);
 
-// from Youtube API
+// interface from Youtube API
+// https://developers.google.com/youtube/v3/docs/videos
+
 export interface YoutubeVideoObj {
   id: {
     videoId: string;
   };
   snippet: {
+    publishedAt: any;
     channelId: string;
     channelTitle: string;
     title;
@@ -105,7 +108,7 @@ class VideoItem extends React.Component<Props, State> {
     const {
       id: { videoId },
       //snippet: { thumbnails: { high: { url: thumbnail }}, title}
-      snippet: { channelId, channelTitle, title }
+      snippet: { publishedAt, channelId, channelTitle, title }
     } = this.props.videoObj;
     let videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
 
@@ -149,6 +152,7 @@ class VideoItem extends React.Component<Props, State> {
             <CustomButton2 onClick={this.props.onChannelClick}>
               {channelTitle}
             </CustomButton2>
+            {/* <h1> {JSON.stringify(publishedAt, null, 2)}</h1> */}
           </CenterDiv>
           <CenterDiv>
             {channelId == this.props.channelTerm &&
