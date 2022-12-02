@@ -151,28 +151,41 @@ const ChannelList = props => {
             />
           </div>
           <div
+            className="date-inputs-container"
             style={{
-              flexDirection: "row"
+              display: "flex",
+              flexDirection: "row",
+              // the default for align-items is stretch so the button
+              // in this container is also stretched along the cross axis
+              // https://stackoverflow.com/questions/33212892/how-to-make-a-flex-item-not-fill-the-height-of-the-flex-container
+              alignItems: "flex-end"
             }}
           >
-            <input
-              id="publishedAfter"
-              type="text"
-              value={publishedAfterDateString}
-              onChange={e => {
-                setPublishedAfterDateString(e.target.value);
-              }}
-            />
-
-            <input
-              id="publishedBefore"
-              type="text"
-              value={publishedBeforeDateString}
-              onChange={e => {
-                setPublishedBeforeDateString(e.target.value);
-              }}
-            />
-
+            <div
+              className="published-after-container"
+              style={{ display: "flex", flexDirection: "column" }}
+            >
+              <label for="publishedAfter"> Start (YYYY)</label>
+              <input
+                id="publishedAfter"
+                type="text"
+                value={publishedAfterDateString}
+                onChange={e => {
+                  setPublishedAfterDateString(e.target.value);
+                }}
+              />
+            </div>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <label for="publishedBefore"> End (YYYY)</label>
+              <input
+                id="publishedBefore"
+                type="text"
+                value={publishedBeforeDateString}
+                onChange={e => {
+                  setPublishedBeforeDateString(e.target.value);
+                }}
+              />
+            </div>
             <button onClick={handleClickSearchVideos}> Search</button>
           </div>
           <ol>
