@@ -1,6 +1,5 @@
 import React, { ChangeEvent } from "react";
 import { Link } from "react-router-dom";
-import { withRouter } from "react-router-dom";
 import ReactPlayer from "react-player";
 import styled from "styled-components";
 
@@ -14,10 +13,6 @@ const Wrapper = styled.div`
 
 const StyledLink = styled(Link)`
   font-size: 15px;
-`;
-const CenterDiv = styled.div`
-  margin: 1em;
-  display: inline-block;
 `;
 
 const SpeedInput = styled.input`
@@ -45,6 +40,11 @@ const CustomButton2 = styled.button`
   padding: 0.5em;
 `;
 
+const ContentContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+`;
 function getGoldWidth(goldHeight) {
   let goldY = Number(goldHeight.substring(0, goldHeight.length - 2)); // "640"
   let goldWidth = goldY * 1.618 + "px";
@@ -125,46 +125,74 @@ class VideoItem extends React.Component<Props, State> {
               <h1>{title.replace(aposttropheRegex, "'")} </h1>
             )}
           </div>
-          <CenterDiv>
-            {this.state.isShowing || mSet.has(this.props.index) ? (
-              <ReactPlayer
-                url={videoUrl}
-                playbackRate={this.state.playbackRate}
-                controls={true}
-                width={goldWidth}
-                height={goldHeight}
-                volume={this.props.globalVolume}
-              />
-            ) : (
-              <CustomButton onClick={this.showPlayer}> Play </CustomButton>
-            )}
-          </CenterDiv>
-          <CenterDiv>
-            {(this.state.isShowing || mSet.has(this.props.index)) && (
-              <SpeedInput
-                placeholder="Speed"
-                type="text"
-                onChange={this.onPlaybackRateChange}
-              />
-            )}
-          </CenterDiv>
-          <CenterDiv>
-            <CustomButton2 onClick={this.props.onChannelClick}>
-              {channelTitle}
-            </CustomButton2>
-            {/* <h1> {JSON.stringify(publishedAt, null, 2)}</h1> */}
-          </CenterDiv>
-          <CenterDiv>
-            {channelId == this.props.channelTerm &&
-              this.props.selectedChannel && (
-                <StyledLink to={process.env.PUBLIC_URL + "/ChannelList"}>
-                  Latest from {this.props.selectedChannel}
-                </StyledLink>
+          <ContentContainer>
+            <div
+              className="player-container"
+              style={{
+                margin: "2rem"
+              }}
+            >
+              {this.state.isShowing || mSet.has(this.props.index) ? (
+                <ReactPlayer
+                  url={videoUrl}
+                  playbackRate={this.state.playbackRate}
+                  controls={true}
+                  width={goldWidth}
+                  height={goldHeight}
+                  volume={this.props.globalVolume}
+                />
+              ) : (
+                <CustomButton onClick={this.showPlayer}> Play </CustomButton>
               )}
-          </CenterDiv>
-          <CenterDiv>
-            <a href={videoUrl}> YT </a>
-          </CenterDiv>
+            </div>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <div
+                className="speed-playback-container"
+                style={{
+                  margin: "1rem"
+                }}
+              >
+                {(this.state.isShowing || mSet.has(this.props.index)) && (
+                  <SpeedInput
+                    placeholder="Speed"
+                    type="text"
+                    onChange={this.onPlaybackRateChange}
+                  />
+                )}
+              </div>
+              <div
+                className="channel-title-container"
+                style={{
+                  margin: "1rem"
+                }}
+              >
+                <CustomButton2 onClick={this.props.onChannelClick}>
+                  {channelTitle}
+                </CustomButton2>
+                {/* <h1> {JSON.stringify(publishedAt, null, 2)}</h1> */}
+              </div>
+              <div
+                style={{
+                  margin: "1rem"
+                }}
+              >
+                {channelId == this.props.channelTerm &&
+                  this.props.selectedChannel && (
+                    <StyledLink to={process.env.PUBLIC_URL + "/ChannelList"}>
+                      Latest from {this.props.selectedChannel}
+                    </StyledLink>
+                  )}
+              </div>
+              <div
+                className="link-container"
+                style={{
+                  margin: "1rem"
+                }}
+              >
+                <a href={videoUrl}> YT </a>
+              </div>
+            </div>
+          </ContentContainer>
         </div>
       </Wrapper>
     );
